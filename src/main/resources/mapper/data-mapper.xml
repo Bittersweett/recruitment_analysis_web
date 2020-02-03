@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recruitment_analysis_web.dao.DataMapper">
+
+    <select id="selectCityDemand" resultType="JobMessage">
+        select t1.city as city, t1.cnt as cnt from (select city, count(1) as cnt
+        from job_message group by city) as t1 order by t1.cnt desc
+    </select>
+
+    <select id="selectCityDemandOfSecondType" resultType="JobMessage">
+        select count(1) as cnt, city, second_type from lagou_job_message  group by city, second_type order by city, cnt desc
+    </select>
+
+    <select id="selectCntOfFinanceStage" resultType="JobMessage">
+      select finance_stage, district, count(1) as cnt from lagou_job_message where
+      city = #{city} and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}'
+      group by finance_stage,city,district
+    </select>
+
+    <select id="selectCompanyLabelList" resultType="JobMessage">
+        select city,company_label_list from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
+    </select>
+
+    <select id="selectSkillLabelList" resultType="JobMessage">
+        select city,skill_lables from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
+    </select>
+
+    <select id="selectPositionAdvantageList" resultType="JobMessage">
+        select city,position_advantage from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
+    </select>
+
+    <select id="selectCityDistrictDemand" resultType="JobMessage">
+        select count(1) as cnt, city, district from lagou_job_message where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city in('北京','上海','广州','深圳','杭州') group by city, district
+    </select>
+
+    <select id="selectResumeCountOfCityByDate" resultType="JobMessage">
+        select count(1) as cnt, city, substring(job_create_ime, 1, 10) as ds  from lagou_job_message
+        where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' group by city, ds;
+    </select>
+
+    <select id="selectResumeCountOfCity" resultType="JobMessage">
+        select count(1) as cnt, city from lagou_job_message
+        where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' group by city;
+    </select>
+
+    <select id="selectRankData" resultType="JobMessage">
+        select
+        <if test="col=='company_name'">
+            company_name,compnay_short_name,
+        </if>
+        <if test="col=='second_type'">
+            second_type,
+        </if>
+        count(1) as cnt from lagou_job_message
+        <if test="col=='company_name'">
+            group by company_name
+        </if>
+        <if test="col=='second_type'">
+            group by second_type
+        </if>
+        order by cnt desc limit 20
+    </select>
+
+    <select id="selectDistinctField" resultType="JobMessage">
+        select
+        <if test="type=='work_year'">
+            work_year,
+        </if>
+        <if test="type=='education'">
+            education,
+        </if>
+        <if test="type=='subway_line'">
+            subway_line,
+        </if>
+        <if test="type=='station_name'">
+            station_name,
+        </if>
+        <if test="type=='business_zones'">
+            business_zones,
+        </if>
+        <if test="type=='finance_stage'">
+            finance_stage,
+        </if>
+        <if test="type=='salary'">
+            salary,
+        </if>
+
+        count(1) as cnt
+        from lagou_job_message
+        where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city = #{city}
+        <if test="type=='work_year'">
+            group by work_year
+        </if>
+        <if test="type=='education'">
+            group by education
+        </if>
+        <if test="type=='subway_line'">
+            and subway_line != 'None' group by subway_line
+        </if>
+        <if test="type=='station_name'">
+            and station_name != 'None' group by station_name
+        </if>
+        <if test="type=='business_zones'">
+            group by business_zones
+        </if>
+        <if test="type=='finance_stage'">
+            group by finance_stage
+        </if>
+        <if test="type=='salary'">
+            group by salary
+        </if>
+        order by cnt desc
+        <if test="type=='subway_line'">
+            limit 20
+        </if>
+        <if test="type=='station_name'">
+            limit 20
+        </if>
+
+    </select>
+
+    <select id="selectLocationData" resultType="JobMessage">
+        select distinct longitude,company_name, compnay_short_name, latitude from lagou_job_message where city= #{city}
+        and longitude != 'None' and latitude != 'None'
+        and substring(job_create_ime, 1, 10) = '${date}'
+        <if test="company_name!=''">
+            and (company_name like '%${company_name}%' or compnay_short_name like '%${company_name}%')
+        </if>
+    </select>
+
+    <select id="getOptions" resultType="JobMessage">
+        select
+        <choose>
+            <when test="type=='city'">
+                distinct city as city
+            </when>
+            <when test="type=='company_size'">
+                distinct company_size as company_size
+            </when>
+            <when test="type=='finance_stage'">
+                distinct finance_stage as finance_stage
+            </when>
+            <when test="type=='first_type'">
+                distinct first_type as first_type
+            </when>
+            <when test="type=='second_type'">
+                distinct second_type as second_type
+            </when>
+            <when test="type=='third_type'">
+                distinct third_type as third_type
+            </when>
+            <when test="type=='work_year'">
+                distinct work_year as work_year
+            </when>
+            <when test="type=='education'">
+                distinct education as education
+            </when>
+            <otherwise>
+                1 = 1
+            </otherwise>
+        </choose>
+        from lagou_job_message
+    </select>
+
+    <select id="selectBusinessZonesData" resultType="JobMessage">
+        select city,company_label_list from lagou_job_message where 1 = 1
+        and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}'
+        <if test="city!='All'">
+            and city = #{city}
+        </if>
+    </select>
+
+    <select id="selectField" resultType="JobMessage">
+        select
+        <if test="field=='business_zones'">
+            business_zones
+        </if>
+        from lagou_job_message where 1 = 1
+        and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city = #{city}
+    </select>
+
+    <select id="selectSalary" resultType="JobMessage">
+        select salary, count(1) as cnt from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
+        group by salary order by cnt desc
+    </select>
+
+    <select id="selectDistinctFieldOfParams" resultType="JobMessage">
+        select
+        <if test="field=='work_year'">
+            work_year
+        </if>
+        <if test="field=='education'">
+            education
+        </if>
+        from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
+    </select>
+</mapper>
