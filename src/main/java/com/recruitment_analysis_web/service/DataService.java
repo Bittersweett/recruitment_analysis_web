@@ -453,8 +453,10 @@ public class DataService {
      * @param endDate
      * @return
      */
-    public Map<String, Object> getTrafficData(String type, String city, String startDate, String endDate) {
-        List<JobMessage> lists = dataMapper.selectDistinctField(type, city, startDate, endDate);
+    public Map<String, Object> getTrafficData(String type, String param, String startDate, String endDate) {
+        String cons = DataProcessUtil.generateCons(param, startDate, endDate);
+
+        List<JobMessage> lists = dataMapper.selectDistinctFieldOfParams(type, cons);
 
         List<HashMap<String, Object>> resMap = new LinkedList<>();
         for (JobMessage jobMessage : lists) {

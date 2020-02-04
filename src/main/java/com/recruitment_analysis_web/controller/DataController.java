@@ -84,8 +84,8 @@ public class DataController {
     @CrossOrigin(origins = "http://localhost:8887")
     @RequestMapping(path = "/gettrafficdata", method = {RequestMethod.GET})
     @ResponseBody
-    public String getTrafficData(String type, String city, String startDate, String endDate) {
-        Map<String, Object> res = dataService.getTrafficData(type, city, startDate, endDate);
+    public String getTrafficData(String type, String param, String startDate, String endDate) {
+        Map<String, Object> res = dataService.getTrafficData(type, param, startDate, endDate);
         return DataProcessUtil.getJSONString(0, "success", res);
     }
 

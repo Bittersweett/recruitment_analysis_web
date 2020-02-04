@@ -200,15 +200,44 @@
 
     <select id="selectDistinctFieldOfParams" resultType="JobMessage">
         select
-        <if test="field=='work_year'">
-            work_year
-        </if>
-        <if test="field=='education'">
-            education
-        </if>
+        <choose>
+            <when test="field=='work_year'">
+                work_year,count(1) as cnt
+            </when>
+            <when test="field=='education'">
+                education,count(1) as cnt
+            </when>
+            <when test="field=='station_name'">
+                station_name,count(1) as cnt
+            </when>
+            <when test="field=='subway_line'">
+                subway_line,count(1) as cnt
+            </when>
+            <otherwise>
+                1 = 1
+            </otherwise>
+        </choose>
         from lagou_job_message
         <if test="cons!=''">
             where ${cons}
         </if>
+
+        <choose>
+            <when test="field=='work_year'">
+                group by work_year order by cnt desc
+            </when>
+            <when test="field=='education'">
+                group by education order by cnt desc
+            </when>
+            <when test="field=='station_name'">
+                and station_name != 'None' group by station_name order by cnt desc limit 20
+            </when>
+            <when test="field=='subway_line'">
+                and subway_line != 'None' group by subway_line order by cnt desc limit 20
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+
     </select>
 </mapper>
