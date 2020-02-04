@@ -13,7 +13,7 @@ public interface DataMapper {
 
     List<JobMessage> selectCityDemandOfSecondType();
 
-    List<JobMessage> selectCntOfFinanceStage(@Param("city") String city, @Param("startDate") String startDate, @Param("endDate") String endDate);
+    List<JobMessage> selectCntOfFinanceStage(@Param("cons") String cons);
 
     List<JobMessage> selectCompanyLabelList(@Param("cons") String cons);
 

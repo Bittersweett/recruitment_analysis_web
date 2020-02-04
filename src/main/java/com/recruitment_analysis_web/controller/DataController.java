@@ -36,8 +36,8 @@ public class DataController {
     @CrossOrigin(origins = "http://localhost:8887")
     @RequestMapping(path = "/getcntoffinancestage", method = {RequestMethod.GET})
     @ResponseBody
-    public String getCntOfFinanceStage(String city, String startDate, String endDate) {
-        Map<String, Object> res = dataService.selectCntOfFinanceStage(city, startDate, endDate);
+    public String getCntOfFinanceStage(String param, String startDate, String endDate) {
+        Map<String, Object> res = dataService.selectCntOfFinanceStage(param, startDate, endDate);
         return DataProcessUtil.getJSONString(0, "success", res);
     }
 

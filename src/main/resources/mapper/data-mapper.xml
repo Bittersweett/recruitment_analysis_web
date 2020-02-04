@@ -14,8 +14,10 @@
     </select>
 
     <select id="selectCntOfFinanceStage" resultType="JobMessage">
-      select finance_stage, district, count(1) as cnt from lagou_job_message where
-      city = #{city} and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}'
+      select finance_stage, district, count(1) as cnt from lagou_job_message
+        <if test="cons!=''">
+            where ${cons}
+        </if>
       group by finance_stage,city,district
     </select>
 
@@ -213,6 +215,9 @@
             <when test="field=='subway_line'">
                 subway_line,count(1) as cnt
             </when>
+            <when test="field=='finance_stage'">
+                finance_stage,count(1) as cnt
+            </when>
             <otherwise>
                 1 = 1
             </otherwise>
@@ -235,6 +240,10 @@
             <when test="field=='subway_line'">
                 and subway_line != 'None' group by subway_line order by cnt desc limit 20
             </when>
+            <when test="field=='finance_stage'">
+                group by finance_stage order by cnt desc
+            </when>
+
             <otherwise>
             </otherwise>
         </choose>

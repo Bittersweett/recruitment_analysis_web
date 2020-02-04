@@ -79,8 +79,10 @@ public class DataService {
         return res;
     }
 
-    public Map<String, Object> selectCntOfFinanceStage(String city, String startDate, String endDate) {
-        List<JobMessage> lists = dataMapper.selectCntOfFinanceStage(city, startDate, endDate);
+    public Map<String, Object> selectCntOfFinanceStage(String param, String startDate, String endDate) {
+        String cons = DataProcessUtil.generateCons(param, startDate, endDate);
+        System.out.println("ccons " + cons);
+        List<JobMessage> lists = dataMapper.selectCntOfFinanceStage(cons);
 
         List<String> financeStages = new LinkedList<String>() {{
             add("A轮");
@@ -113,7 +115,7 @@ public class DataService {
 
             List<Integer> dataList = new LinkedList<>();
             for (String financeStage : financeStages) {
-                if (cntOfFinanceStageMap.get(financeStage).get(district) != null) {
+                if (cntOfFinanceStageMap.get(financeStage) != null && cntOfFinanceStageMap.get(financeStage).get(district) != null) {
                     dataList.add(cntOfFinanceStageMap.get(financeStage).get(district));
                 } else {
                     dataList.add(0);
@@ -129,7 +131,7 @@ public class DataService {
 
 
         // 计算各融资阶段的需求
-        List<JobMessage> financeStageCnt = dataMapper.selectDistinctField("finance_stage", city, startDate, endDate);
+        List<JobMessage> financeStageCnt = dataMapper.selectDistinctFieldOfParams("finance_stage", cons);
 
         int total = 0;
         Map<String, Integer> fananceStageDemandMap = new HashMap<>();
