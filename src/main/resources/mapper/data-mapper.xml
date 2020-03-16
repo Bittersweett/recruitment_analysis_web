@@ -10,11 +10,11 @@
     </select>
 
     <select id="selectCityDemandOfSecondType" resultType="JobMessage">
-        select count(1) as cnt, city, second_type from lagou_job_message  group by city, second_type order by city, cnt desc
+        select count(1) as cnt, city, second_type from job_message_lagou  group by city, second_type order by city, cnt desc
     </select>
 
     <select id="selectCntOfFinanceStage" resultType="JobMessage">
-      select finance_stage, district, count(1) as cnt from lagou_job_message
+      select finance_stage, district, count(1) as cnt from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>
@@ -22,38 +22,38 @@
     </select>
 
     <select id="selectCompanyLabelList" resultType="JobMessage">
-        select city,company_label_list from lagou_job_message
+        select city,company_label_list from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>
     </select>
 
     <select id="selectSkillLabelList" resultType="JobMessage">
-        select city,skill_lables from lagou_job_message
+        select city,skill_lables from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>
     </select>
 
     <select id="selectPositionAdvantageList" resultType="JobMessage">
-        select city,position_advantage from lagou_job_message
+        select city,position_advantage from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>
     </select>
 
     <select id="selectCityDistrictDemand" resultType="JobMessage">
-        select count(1) as cnt, city, district from lagou_job_message where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city in('北京','上海','广州','深圳','杭州') group by city, district
+        select count(1) as cnt, city, district from job_message_lagou where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city in('北京','上海','广州','深圳') group by city, district
     </select>
 
     <select id="selectResumeCountOfCityByDate" resultType="JobMessage">
-        select count(1) as cnt, city, substring(job_create_ime, 1, 10) as ds  from lagou_job_message
+        select count(1) as cnt, city, substring(job_create_ime, 1, 10) as ds  from job_message_lagou
         where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' group by city, ds;
     </select>
 
     <select id="selectResumeCountOfCity" resultType="JobMessage">
-        select count(1) as cnt, city from lagou_job_message
-        where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' group by city;
+        select count(1) as cnt, city from job_message_lagou
+        where 1=1 group by city;
     </select>
 
     <select id="selectRankData" resultType="JobMessage">
@@ -64,7 +64,7 @@
         <if test="col=='second_type'">
             second_type,
         </if>
-        count(1) as cnt from lagou_job_message
+        count(1) as cnt from job_message_lagou
         <if test="col=='company_name'">
             group by company_name
         </if>
@@ -99,8 +99,8 @@
         </if>
 
         count(1) as cnt
-        from lagou_job_message
-        where substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city = #{city}
+        from job_message_lagou
+        where city = #{city}
         <if test="type=='work_year'">
             group by work_year
         </if>
@@ -133,7 +133,7 @@
     </select>
 
     <select id="selectLocationData" resultType="JobMessage">
-        select distinct longitude,company_name, compnay_short_name, latitude from lagou_job_message where city= #{city}
+        select distinct longitude,company_name, compnay_short_name, latitude from job_message_lagou where city= #{city}
         and longitude != 'None' and latitude != 'None'
         and substring(job_create_ime, 1, 10) = '${date}'
         <if test="company_name!=''">
@@ -172,12 +172,11 @@
                 1 = 1
             </otherwise>
         </choose>
-        from lagou_job_message
+        from job_message_lagou
     </select>
 
     <select id="selectBusinessZonesData" resultType="JobMessage">
-        select city,company_label_list from lagou_job_message where 1 = 1
-        and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}'
+        select city,company_label_list from job_message_lagou where 1 = 1
         <if test="city!='All'">
             and city = #{city}
         </if>
@@ -188,12 +187,12 @@
         <if test="field=='business_zones'">
             business_zones
         </if>
-        from lagou_job_message where 1 = 1
-        and substring(job_create_ime, 1, 10) between '${startDate}' and '${endDate}' and city = #{city}
+        from job_message_lagou where 1 = 1
+        and city = #{city}
     </select>
 
     <select id="selectSalary" resultType="JobMessage">
-        select salary, count(1) as cnt from lagou_job_message
+        select salary, count(1) as cnt from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>
@@ -222,7 +221,7 @@
                 1 = 1
             </otherwise>
         </choose>
-        from lagou_job_message
+        from job_message_lagou
         <if test="cons!=''">
             where ${cons}
         </if>

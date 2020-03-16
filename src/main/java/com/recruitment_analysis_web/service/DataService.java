@@ -21,7 +21,7 @@ public class DataService {
         add("深圳");
         add("上海");
         add("广州");
-        add("杭州");
+//        add("杭州");
     }};
 
     public Map<String, Object> selectCityDemand() {

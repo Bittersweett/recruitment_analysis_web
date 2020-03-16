@@ -32,7 +32,6 @@ public class CompanyController {
         HashMap<String, String> typeMap = new HashMap<String, String>() {{
             put("skill", "技能");
             put("company", "公司优点");
-            put("position", "职位优点");
         }};
 
         List<HashMap<String, Object>> lists = new LinkedList<>();
@@ -53,7 +52,8 @@ public class CompanyController {
     }
 
     @CrossOrigin(origins = "http://localhost:8887")
-    @RequestMapping(path = "/getjobrequirement", method = {RequestMethod.GET})
+    @RequestMapping(path = "/getjobrequirement", method = {RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE,
+            RequestMethod.PATCH, RequestMethod.HEAD, RequestMethod.POST})
     @ResponseBody
     public String getJobRequirement(String type, String param, String startDate, String endDate) {
         Map<String, Object> res = companyService.getJobRequirement(type, param, startDate, endDate);

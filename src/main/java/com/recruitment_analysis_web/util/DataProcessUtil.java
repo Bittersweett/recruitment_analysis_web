@@ -30,7 +30,7 @@ public class DataProcessUtil {
 
     public static String generateCons(String param, String startDate, String endDate) {
         StringBuilder cons = new StringBuilder();
-        String temp = "substring(job_create_ime, 1, 10) between '" + startDate + "' and '" + endDate + "'";
+        String temp = "1 = 1";
         cons.append(temp);
         JSONObject jsonObject = JSONObject.parseObject(param);
         for (Map.Entry<String, Object> set : jsonObject.entrySet()) {
