@@ -81,7 +81,7 @@ public class DataService {
 
     public Map<String, Object> selectCntOfFinanceStage(String param, String startDate, String endDate) {
         String cons = DataProcessUtil.generateCons(param, startDate, endDate);
-        System.out.println("ccons " + cons);
+        cons = cons + " and finance_stage != 'None'";
         List<JobMessage> lists = dataMapper.selectCntOfFinanceStage(cons);
 
         List<String> financeStages = new LinkedList<String>() {{
@@ -95,39 +95,48 @@ public class DataService {
             add("未融资");
         }};
 
-        List<String> districtList = new LinkedList<>();
-        Map<String, HashMap<String, Integer>> cntOfFinanceStageMap = new HashMap<>();
+//        List<String> districtList = new LinkedList<>();
+        Map<String, Integer> cntOfFinanceStageMap = new HashMap<>();
         for (JobMessage list : lists) {
-            if (!districtList.contains(list.getDistrict())) {
-                districtList.add(list.getDistrict());
-            }
-            if (!cntOfFinanceStageMap.containsKey(list.getFinanceStage())) {
-                cntOfFinanceStageMap.put(list.getFinanceStage(), new HashMap<String, Integer>() {{
-                    put(list.getDistrict(), list.getCnt());
-                }});
-            } else {
-                cntOfFinanceStageMap.get(list.getFinanceStage()).put(list.getDistrict(), list.getCnt());
-            }
+            cntOfFinanceStageMap.put(list.getFinanceStage(), Integer.valueOf(list.getCnt()));
+//            if (!districtList.contains(list.getDistrict())) {
+//                districtList.add(list.getDistrict());
+//            }
+//            if (!cntOfFinanceStageMap.containsKey(list.getFinanceStage())) {
+//                cntOfFinanceStageMap.put(list.getFinanceStage(), new HashMap<String, Integer>() {{
+//                    put(list.getDistrict(), list.getCnt());
+//                }});
+//            } else {
+//                cntOfFinanceStageMap.get(list.getFinanceStage()).put(list.getDistrict(), list.getCnt());
+//            }
         }
 
         List<Object> seriesList = new LinkedList<>();
-        for (String district : districtList) {
-
-            List<Integer> dataList = new LinkedList<>();
-            for (String financeStage : financeStages) {
-                if (cntOfFinanceStageMap.get(financeStage) != null && cntOfFinanceStageMap.get(financeStage).get(district) != null) {
-                    dataList.add(cntOfFinanceStageMap.get(financeStage).get(district));
-                } else {
-                    dataList.add(0);
-
-                }
-            }
-            System.out.println(dataList);
-            seriesList.add(new LinkedHashMap<String, Object>() {{
-                put("name", district);
-                put("data", dataList);
-            }});
+        List<Integer> dataList = new LinkedList<>();
+        for (String financeStage : financeStages) {
+            dataList.add(cntOfFinanceStageMap.get(financeStage));
         }
+        seriesList.add(new LinkedHashMap<String, Object>() {{
+            put("name", "需求量");
+            put("data", dataList);
+        }});
+
+//        for (String district : districtList) {
+//
+//            for (String financeStage : financeStages) {
+//                if (cntOfFinanceStageMap.get(financeStage) != null && cntOfFinanceStageMap.get(financeStage).get(district) != null) {
+//                    dataList.add(cntOfFinanceStageMap.get(financeStage).get(district));
+//                } else {
+//                    dataList.add(0);
+//
+//                }
+//            }
+//            System.out.println(dataList);
+//            seriesList.add(new LinkedHashMap<String, Object>() {{
+//                put("name", district);
+//                put("data", dataList);
+//            }});
+//        }
 
 
         // 计算各融资阶段的需求
@@ -568,5 +577,27 @@ public class DataService {
         res.put("data", pieData);
         return res;
 
+    }
+
+    public Map<String, Object> getDemandByCity(String startDate, String endDate) {
+        List<JobMessage> lists = dataMapper.selectResumeCountOfCity(startDate, endDate);
+        List<String> categories = new LinkedList<>();
+        List<Map<String, Object>> seriesDataList = new LinkedList<>();
+        Map<String, Object> seriesData = new LinkedHashMap<>();
+        List<Integer> seriesItem = new LinkedList<>();
+        for (JobMessage list : lists) {
+            categories.add(list.getCity());
+            seriesItem.add(list.getCnt());
+        }
+        seriesData.put("data", seriesItem);
+        seriesDataList.add(seriesData);
+
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("series", seriesDataList);
+        dataMap.put("categories", categories);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("data", dataMap);
+        return res;
     }
 }

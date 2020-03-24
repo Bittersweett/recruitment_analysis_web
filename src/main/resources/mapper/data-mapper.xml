@@ -18,7 +18,7 @@
         <if test="cons!=''">
             where ${cons}
         </if>
-      group by finance_stage,city,district
+      group by finance_stage
     </select>
 
     <select id="selectCompanyLabelList" resultType="JobMessage">

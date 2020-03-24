@@ -106,4 +106,12 @@ public class DataController {
         Map<String, Object> res = dataService.getAvgSalary(param, startDate, endDate);
         return DataProcessUtil.getJSONString(0, "success", res);
     }
+
+    @CrossOrigin(origins = "http://localhost:8887")
+    @RequestMapping(path = "/getdemandbycity", method = {RequestMethod.GET})
+    @ResponseBody
+    public String getDemandByCity(String startDate, String endDate) {
+        Map<String, Object> res = dataService.getDemandByCity(startDate, endDate);
+        return DataProcessUtil.getJSONString(0, "success", res);
+    }
 }

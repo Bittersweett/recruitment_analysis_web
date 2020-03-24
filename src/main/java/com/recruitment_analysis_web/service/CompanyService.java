@@ -90,7 +90,6 @@ public class CompanyService {
     public Map<String, Object> getJobRequirement(String type, String param, String startDate, String endDate) {
 
         String cons = DataProcessUtil.generateCons(param, startDate, endDate);
-        System.out.println("cons    " +  cons);
         List<JobMessage> lists = dataMapper.selectDistinctFieldOfParams(type, cons);
 
         List<String> categories = new LinkedList<>();
